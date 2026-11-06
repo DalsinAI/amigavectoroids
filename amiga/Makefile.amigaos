@@ -1,0 +1,71 @@
+# Vectoroids 1.1.2 for AmigaOS 3.x, 68040/68060 + FPU, on OpenGPU's SDL 2.
+#
+#   make -f amiga/Makefile.amigaos -j2 dist \
+#        STOVE=/path/to/openamigagcc-16.2.0-open4 \
+#        NDK=/path/to/OpenNDK/Include_H SDL2KIT=/path/to/opengpu-sdk
+#
+# Upstream's makefile's vectoroids (its sound and joystick settings), the
+# data at PROGDIR:data/. SDL2KIT is the OpenGPU developer kit (SDL2,
+# SDL2_image, SDL2_mixer: the program's halves of LIBS:OpenGPU's modules).
+
+STOVE   ?= $(HOME)/CradleLab/toolchain/openamigagcc-16.2.0-open4-x86_64-linux
+NDK     ?= $(HOME)/CradleLab/gfopensdk/OpenNDK/Include_H
+SDL2KIT ?= /mnt/amigachrome/team2/deps/opengpu-sdk
+CC      = $(STOVE)/bin/m68k-amigaos-gcc
+STRIP   = $(STOVE)/bin/m68k-amigaos-strip
+CPU     ?= -m68040 -m68881
+# -fno-tree-loop-distribute-patterns: GCC 16's loop miscompile (the kit's
+# sdl2-config gives it for GCC 16 too).
+OPT     ?= -O2 -fomit-frame-pointer -fno-tree-loop-distribute-patterns
+
+BUILD   = build/amigaos
+OBJDIR  = $(BUILD)/obj
+PROG    = Vectoroids
+OUT     = dist/Vectoroids
+
+DEFS    = -D__amigaos__ -D__SOUND -DJOY_YES -DDATA_PREFIX=\"PROGDIR:data/\"
+INC     = -I$(SDL2KIT)/include
+CFLAGS  = -noixemul $(OPT) $(CPU) -fno-common -MMD -MP -std=gnu99 -w
+LDFLAGS = -noixemul $(CPU)
+LIBS    = -L$(SDL2KIT)/lib -lSDL2_mixer -lSDL2_image -lSDL2 -lpthread -latomic -lm
+
+SRC     = vectoroids.c
+CSRC    = amiga/amiga_start.c amiga/amiga_screens.c amiga/stack.c
+OBJS    = $(SRC:%.c=$(OBJDIR)/%.o) $(CSRC:%.c=$(OBJDIR)/%.o)
+ICONS   = $(wildcard amiga/icons/*.info)
+
+all: $(BUILD)/$(PROG)
+
+$(BUILD)/$(PROG): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@.debug $(OBJS) $(LIBS)
+	$(STRIP) -o $@ $@.debug
+
+$(OBJDIR)/amiga/%.o: amiga/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -I$(NDK) -Wall -c -o $@ $<
+
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(DEFS) $(INC) -c -o $@ $<
+
+# The drawer: the program; data/ with the game's pictures, sounds and
+# music; ReadMe, upstream's README and the licence. The high score and the
+# game left off are kept in the drawer's vectoroids-state.
+dist: $(BUILD)/$(PROG) $(ICONS) AMIGA_PORT.md
+	rm -rf $(OUT) && mkdir -p $(OUT)/data
+	cp $(BUILD)/$(PROG) $(OUT)/
+	cp -R data/images data/music data/sounds $(OUT)/data/
+	cp AMIGA_PORT.md $(OUT)/ReadMe
+	cp README.txt $(OUT)/ReadMe-upstream
+	cp LICENSE $(OUT)/COPYING.txt
+	cp amiga/icons/Vectoroids.info amiga/icons/ReadMe.info $(OUT)/
+	for f in ReadMe-upstream COPYING.txt; do cp amiga/icons/ReadMe.info $(OUT)/$$f.info; done
+	cp amiga/icons/Folder.info $(OUT)/data.info
+	cp amiga/icons/Vectoroids-drawer.info dist/Vectoroids.info
+
+-include $(OBJS:.o=.d)
+
+clean:
+	rm -rf $(BUILD)
+
+.PHONY: all clean dist

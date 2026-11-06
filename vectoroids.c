@@ -588,6 +588,10 @@ void draw_centered_text(char *str, int y, int s, color_type c);
 
 /* --- MAIN --- */
 
+#ifdef __amigaos__
+void amiga_start(void); /* amiga/amiga_start.c: into the drawer */
+#endif
+
 int main(int argc, char *argv[])
 {
   int done;
@@ -595,6 +599,9 @@ int main(int argc, char *argv[])
   char statefile[256], buf[256];
   char *tmp_str;
 
+#ifdef __amigaos__
+  amiga_start();
+#endif
 
   setup(argc, argv);
 
@@ -608,7 +615,10 @@ int main(int argc, char *argv[])
 
   /* Load state from disk: */
 
-#ifndef _WIN32
+#if defined(__amigaos__)
+  /* the high score and the game left off beside the program */
+  snprintf(statefile, sizeof(statefile), "PROGDIR:vectoroids-state");
+#elif !defined(_WIN32)
   /* snprintf(statefile, sizeof(statefile), "%s/.vectoroids-state",
      getenv("HOME")); */
   snprintf(statefile, sizeof(statefile), "%s/.vectoroids-state", getenv("HOME"));
