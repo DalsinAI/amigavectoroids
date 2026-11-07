@@ -20,10 +20,13 @@ SDL_LIB=$(shell sdl2-config --libs) $(MIXER) -lSDL2_image
 NOSOUNDFLAG=__SOUND
 MIXER=-lSDL2_mixer
 
+# Debian hardening
+CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS=-Wall -Wno-long-long -pedantic -std=c99 -O2 \
 	$(shell sdl2-config --cflags) -D$(NOSOUNDFLAG) \
+	$(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS) \
 	-DDATA_PREFIX=\"$(DATA_PREFIX)\" -DJOY_$(JOY) -D$(TARGET_DEF)
-
+LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)
 
 all:	vectoroids
 
@@ -58,7 +61,7 @@ clean:
 
 
 vectoroids:	vectoroids.o
-	$(CC) $(CFLAGS) vectoroids.o -o vectoroids $(SDL_LIB)
+	$(CC) $(CFLAGS) vectoroids.o -o vectoroids $(SDL_LIB) $(LDFLAGS)
 
 
 vectoroids.o:	vectoroids.c
