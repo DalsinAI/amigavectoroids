@@ -74,4 +74,4 @@ credits it: the Jupiter picture is NASA's Voyager 1 photograph (public
 domain); the sounds come from free sound-effect archives; the music,
 "Decision" (decision.s3m), is by Mike Faltiss (Hadji, Digital Music
 Kings), 1995. The Amiga files (amiga/): the AmiCradle Team, GPL 2 or
-later; the icon is upstream's data/images/icon.png.
+later; the icons are our own GlowIcons (amiga/icons/art/vectoroids.svg).
