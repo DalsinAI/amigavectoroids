@@ -56,6 +56,7 @@ dist: $(BUILD)/$(PROG) $(ICONS) AMIGA_PORT.md
 	cp $(BUILD)/$(PROG) $(OUT)/
 	cp -R data/images data/music data/sounds $(OUT)/data/
 	cp AMIGA_PORT.md $(OUT)/ReadMe
+	cp amiga/Controls $(OUT)/Controls
 	cp README.txt $(OUT)/ReadMe-upstream
 	cp LICENSE $(OUT)/COPYING.txt
 	cp amiga/icons/Vectoroids.info amiga/icons/ReadMe.info $(OUT)/
