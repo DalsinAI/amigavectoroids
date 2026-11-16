@@ -29,6 +29,19 @@ What you need
   and SDL2_mixer.module.
 
 
+Installing
+----------
+
+The archive holds the Vectoroids drawer and Install-Vectoroids. Unpack it
+anywhere and double-click Install-Vectoroids: it checks the CPU, the FPU
+and the GFOpenGPU modules, asks where the game goes (Work:Games by
+default) and copies the drawer there. Installing again over it keeps
+your vectoroids-state and Screenshots.
+package/installer.json is its spec (DalsinAI/amicradle's
+scripts/ports/port_installer.py writes the script and its icon), and
+package/build-amiga.sh builds the drawer and packs the archive.
+
+
 How to play
 -----------
 

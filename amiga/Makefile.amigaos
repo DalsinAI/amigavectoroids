@@ -62,6 +62,7 @@ dist: $(BUILD)/$(PROG) $(ICONS) AMIGA_PORT.md
 	cp amiga/icons/Vectoroids.info amiga/icons/ReadMe.info $(OUT)/
 	for f in ReadMe-upstream COPYING.txt; do cp amiga/icons/ReadMe.info $(OUT)/$$f.info; done
 	cp amiga/icons/Vectoroids-drawer.info dist/Vectoroids.info
+	cp package/Install-Vectoroids package/Install-Vectoroids.info dist/
 
 -include $(OBJS:.o=.d)
 
