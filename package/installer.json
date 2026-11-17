@@ -1,0 +1,21 @@
+{
+  "name": "Vectoroids",
+  "version": "1.1.2-amigaos3",
+  "drawer": "Vectoroids",
+  "program": "Vectoroids",
+  "cpu": "68040",
+  "fpu": true,
+  "space": 1000000,
+  "modules": [
+    "SDL2.module",
+    "SDL2_image.module",
+    "SDL2_mixer.module"
+  ],
+  "keep": [
+    "vectoroids-state",
+    "Screenshots"
+  ],
+  "parent": "Work:Games",
+  "badge": "../amiga/icons/art/vectoroids.png",
+  "script": "Install-Vectoroids"
+}
